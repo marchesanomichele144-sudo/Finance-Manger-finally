@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Finance Pro">
+    <meta name="theme-color" content="#007AFF">
+    <title>Finance Manager Pro</title>
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23007AFF' width='100' height='100' rx='20'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>💰</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+```
+    :root {
+        --primary: #007AFF;
+        --success: #34C759;
+        --danger: #FF3B30;
+        --warning: #FF9500;
+        --purple: #5856D6;
+        --gray-1: #1D1D1F;
+        --gray-2: #86868B;
+        --gray-3: #E5E5EA;
+        --gray-4: #F2F2F7;
+        --bg: #F5F5F7;
+        --card-bg: #FFFFFF;
+        --text: #1D1D1F;
+        --shadow: rgba(0, 0, 0, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg: #000000;
+            --card-bg: #1C1C1E;
+            --text: #FFFFFF;
+            --gray-1: #FFFFFF;
+            --gray-2: #98989D;
+            --gray-3: #48484A;
+            --gray-4: #2C2C2E;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* LOGIN SCREEN */
+    #loginScreen {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    #loginScreen.hide {
+        opacity: 0;
+        transform: scale(0.95);
+        pointer-events: none;
+    }
+
+    .login-box {
+        background: var(--card-bg);
+        border-radius: 30px;
+        width: 90%;
+        max-width: 380px;
+        overflow: hidden;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+        animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+        0% { opacity: 0; transform: scale(0.8) translateY(40px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .login-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--purple) 100%);
+        padding: 50px 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-header::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.15) 0%, transparent 60%);
+        animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+        0%, 100% { opacity: 0.4; transform: translateX(0); }
+        50% { opacity: 0.8; transform: translateX(20px); }
+    }
+
+    .login-icon {
+        font-size: 70px;
+        animation: floatIcon 3s ease-in-out infinite;
+        position: relative;
+        z-index: 1;
+    }
+
+    @keyframes floatIcon {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+
+    .login-title {
+        color: white;
+        font-size: 28px;
+        font-weight: 700;
+        margin-top: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .login-form {
+        padding: 30px;
+    }
+
+    .input-wrapper {
+        margin-bottom: 18px;
+    }
+
+    .input-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--gray-2);
+        margin-bottom: 8px;
+    }
+
+    .input-box {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid var(--gray-3);
+        border-radius: 12px;
+        font-size: 16px;
+        background: var(--gray-4);
+        color: var(--text);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        outline: none;
+    }
+
+    .input-box:focus {
+        border-color: var(--primary);
+        background: var(--card-bg);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,122,255,0.15);
+    }
+
+    .error-msg {
+        color: var(--danger);
+        font-size: 13px;
+        font-weight: 600;
+        margin: 12px 0;
+        text-align: center;
+        min-height: 20px;
+    }
+
+    .login-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--purple) 100%);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-size: 17px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 8px 25px rgba(0,122,255,0.35);
+    }
+
+    .login-btn:active {
+        transform: scale(0.97);
+        box-shadow: 0 4px 15px rgba(0,122,255,0.25);
+    }
+
+    /* MAIN APP */
+    #mainApp {
+        display: none;
+        opacity: 0;
+        animation: fadeIn 0.5s ease forwards;
+    }
+
+    #mainApp.show {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        to { opacity: 1; }
+    }
+
+    /* HEADER */
+    .app-header {
+        background: var(--card-bg);
+        padding: 20px 20px 15px;
+        box-shadow: 0 2px 15px var(--shadow);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .app-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .icon-btn {
+        background: var(--gray-4);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .icon-btn:active {
+        transform: scale(0.9);
+    }
+
+    .logout-btn {
+        color: var(--danger);
+    }
+
+    /* STATS CARDS */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, var(--card-color) 0%, var(--card-dark) 100%);
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 8px 20px var(--card-shadow);
+        transition: transform 0.2s ease;
+    }
+
+    .stat-card:active {
+        transform: scale(0.97);
+    }
+
+    .stat-card.balance {
+        --card-color: #007AFF;
+        --card-dark: #0051D5;
+        --card-shadow: rgba(0,122,255,0.3);
+    }
+
+    .stat-card.income {
+        --card-color: #34C759;
+        --card-dark: #248A3D;
+        --card-shadow: rgba(52,199,89,0.3);
+    }
+
+    .stat-card.expense {
+        --card-color: #FF3B30;
+        --card-dark: #D70015;
+        --card-shadow: rgba(255,59,48,0.3);
+    }
+
+    .stat-label {
+        color: rgba(255,255,255,0.9);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        color: white;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    /* TABS */
+    .tabs-container {
+        background: var(--card-bg);
+        padding: 15px 20px;
+        box-shadow: 0 2px 10px var(--shadow);
+    }
+
+    .tabs {
+        display: flex;
+        background: var(--gray-4);
+        border-radius: 12px;
+        padding: 4px;
+        gap: 4px;
+    }
+
+    .tab {
+        flex: 1;
+        padding: 10px;
+        background: transparent;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--gray-2);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .tab.active {
+        background: var(--card-bg);
+        color: var(--text);
+        box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    /* CONTENT SECTIONS */
+    .content-section {
+        display: none;
+        padding: 20px;
+        animation: slideIn 0.3s ease;
+    }
+
+    .content-section.active {
+        display: block;
+    }
+
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 15px var(--shadow);
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 15px;
+    }
+
+    /* FORM */
+    .form-grid {
+        display: grid;
+        gap: 15px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--gray-2);
+        margin-bottom: 8px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid var(--gray-3);
+        border-radius: 12px;
+        font-size: 16px;
+        background: var(--gray-4);
+        color: var(--text);
+        transition: all 0.3s ease;
+        outline: none;
+        font-family: inherit;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+        border-color: var(--primary);
+        background: var(--card-bg);
+        box-shadow: 0 6px 15px rgba(0,122,255,0.1);
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--success) 0%, #248A3D 100%);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-size: 17px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 8px 20px rgba(52,199,89,0.35);
+        margin-top: 10px;
+    }
+
+    .btn-primary:active {
+        transform: scale(0.97);
+    }
+
+    /* TRANSACTIONS LIST */
+    .transaction-item {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px var(--shadow);
+        transition: all 0.2s ease;
+    }
+
+    .transaction-item:active {
+        transform: scale(0.98);
+    }
+
+    .transaction-info {
+        flex: 1;
+    }
+
+    .transaction-category {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 5px;
+    }
+
+    .transaction-date {
+        font-size: 13px;
+        color: var(--gray-2);
+    }
+
+    .transaction-notes {
+        font-size: 13px;
+        color: var(--gray-2);
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid var(--gray-4);
+    }
+
+    .transaction-amount {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .transaction-amount.income {
+        color: var(--success);
+    }
+
+    .transaction-amount.expense {
+        color: var(--danger);
+    }
+
+    /* FUTURE PURCHASES */
+    .purchase-item {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 10px var(--shadow);
+    }
+
+    .purchase-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .purchase-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .purchase-amount {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--warning);
+    }
+
+    .purchase-progress {
+        margin-bottom: 8px;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: var(--gray-4);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--success) 0%, var(--warning) 50%, var(--danger) 100%);
+        border-radius: 10px;
+        transition: width 0.5s ease;
+    }
+
+    .purchase-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: var(--gray-2);
+    }
+
+    .purchase-status {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 8px;
+    }
+
+    .status-ok {
+        background: rgba(52, 199, 89, 0.15);
+        color: var(--success);
+    }
+
+    .status-warning {
+        background: rgba(255, 149, 0, 0.15);
+        color: var(--warning);
+    }
+
+    .status-danger {
+        background: rgba(255, 59, 48, 0.15);
+        color: var(--danger);
+    }
+
+    /* CHARTS */
+    .chart-container {
+        margin: 20px 0;
+    }
+
+    #pieChart {
+        width: 100%;
+        height: 200px;
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-icon {
+        font-size: 60px;
+        opacity: 0.5;
+        margin-bottom: 15px;
+    }
+
+    .empty-text {
+        font-size: 16px;
+        color: var(--gray-2);
+        font-weight: 500;
+    }
+
+    /* TOAST */
+    .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: var(--gray-1);
+        color: white;
+        padding: 16px 24px;
+        border-radius: 16px;
+        font-size: 15px;
+        font-weight: 600;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        z-index: 10000;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        backdrop-filter: blur(20px);
+    }
+
+    .toast.show {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    /* MODAL */
+    .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10001;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .modal.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .modal-box {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 30px;
+        width: 90%;
+        max-width: 350px;
+        text-align: center;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+
+    .modal.show .modal-box {
+        transform: scale(1);
+    }
+
+    .modal-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 10px;
+    }
+
+    .modal-text {
+        font-size: 15px;
+        color: var(--gray-2);
+        margin-bottom: 25px;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .modal-btn {
+        flex: 1;
+        padding: 14px;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .modal-btn.cancel {
+        background: var(--gray-4);
+        color: var(--text);
+    }
+
+    .modal-btn.confirm {
+        background: var(--danger);
+        color: white;
+    }
+
+    .modal-btn:active {
+        transform: scale(0.95);
+    }
+
+    /* SAVE INDICATOR */
+    .save-indicator {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--success);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(52,199,89,0.3);
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .save-indicator.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stat-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <!-- LOGIN -->
+    <div id="loginScreen">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="login-icon">💰</div>
+                <div class="login-title">Finance Manager Pro</div>
+            </div>
+            <div class="login-form">
+                <div class="input-wrapper">
+                    <label class="input-label">Username</label>
+                    <input type="text" id="username" class="input-box" placeholder="marchesano.michele">
+                </div>
+                <div class="input-wrapper">
+                    <label class="input-label">Password</label>
+                    <input type="password" id="password" class="input-box" placeholder="••••••">
+                </div>
+                <div class="error-msg" id="loginError"></div>
+                <button class="login-btn" onclick="app.login()">Accedi</button>
+            </div>
+        </div>
+    </div>
+
+```
+<!-- MAIN APP -->
+<div id="mainApp">
+    <!-- HEADER -->
+    <div class="app-header">
+        <div class="header-row">
+            <h1 class="app-title">Finance Pro</h1>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="app.exportData()" title="Esporta dati">📤</button>
+                <button class="icon-btn logout-btn" onclick="app.logout()" title="Esci">🚪</button>
+            </div>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card balance">
+                <div>
+                    <div class="stat-label">Saldo</div>
+                    <div class="stat-value" id="balance">€ 0.00</div>
+                </div>
+            </div>
+            <div class="stat-card income">
+                <div>
+                    <div class="stat-label">Entrate</div>
+                    <div class="stat-value" id="income">€ 0.00</div>
+                </div>
+            </div>
+            <div class="stat-card expense">
+                <div>
+                    <div class="stat-label">Uscite</div>
+                    <div class="stat-value" id="expense">€ 0.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs-container">
+        <div class="tabs">
+            <button class="tab active" onclick="app.showTab('overview')">📊 Panoramica</button>
+            <button class="tab" onclick="app.showTab('add')">➕ Aggiungi</button>
+            <button class="tab" onclick="app.showTab('future')">🛍️ Futuri</button>
+        </div>
+    </div>
+
+    <!-- OVERVIEW TAB -->
+    <div id="overview-tab" class="content-section active">
+        <div class="section-card">
+            <h2 class="section-title">📊 Distribuzione</h2>
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 class="section-title" style="margin: 0;">📋 Transazioni Recenti</h2>
+                <button class="icon-btn" style="background: rgba(255,59,48,0.1); color: var(--danger);" onclick="app.clearAll()">🗑️</button>
+            </div>
+            <div id="transactionsList"></div>
+        </div>
+    </div>
+
+    <!-- ADD TAB -->
+    <div id="add-tab" class="content-section">
+        <div class="section-card">
+            <h2 class="section-title">➕ Nuova Transazione</h2>
+            <form class="form-grid" onsubmit="app.addTransaction(event)">
+                <div class="form-group">
+                    <label class="form-label">Data</label>
+                    <input type="date" id="date" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo</label>
+                    <select id="type" class="form-select" onchange="app.updateCategories()" required>
+                        <option value="income">💰 Entrata</option>
+                        <option value="expense">💸 Uscita</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Categoria</label>
+                    <select id="category" class="form-select" required></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Importo (€)</label>
+                    <input type="number" id="amount" class="form-input" placeholder="0.00" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Note (opzionale)</label>
+                    <textarea id="notes" class="form-textarea" placeholder="Dettagli..."></textarea>
+                </div>
+                <button type="submit" class="btn-primary">✅ Aggiungi Transazione</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FUTURE TAB -->
+    <div id="future-tab" class="content-section">
+        <div class="section-card">
+            <h2 class="section-title">🛍️ Aggiungi Acquisto Futuro</h2>
+            <form class="form-grid" onsubmit="app.addFuturePurchase(event)">
+                <div class="form-group">
+                    <label class="form-label">Nome Acquisto</label>
+                    <input type="text" id="purchaseName" class="form-input" placeholder="Es. iPhone 15" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Importo (€)</label>
+                    <input type="number" id="purchaseAmount" class="form-input" placeholder="0.00" step="0.01" min="0.01" required>
+                </div>
+                <button type="submit" class="btn-primary">✅ Aggiungi</button>
+            </form>
+        </div>
+
+        <div class="section-card">
+            <h2 class="section-title">📦 Acquisti Pianificati</h2>
+            <div id="purchasesList"></div>
+        </div>
+
+        <div class="section-card">
+            <h2 class="section-title">💡 Riepilogo Budget</h2>
+            <div id="budgetSummary"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-box">
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-text" id="modalText"></div>
+        <div class="modal-actions">
+            <button class="modal-btn cancel" onclick="app.hideModal()">Annulla</button>
+            <button class="modal-btn confirm" id="modalConfirm">Conferma</button>
+        </div>
+    </div>
+</div>
+
+<!-- SAVE INDICATOR -->
+<div class="save-indicator" id="saveIndicator">✓ Salvato</div>
+
+<script>
+    const app = {
+        data: {
+            transactions: [],
+            futurePurchases: [],
+            monthlyBudget: 2000
+        },
+
+        categories: {
+            income: ['💼 Stipendio', '💰 Freelance', '🎁 Regalo', '📈 Investimenti', '
+```
