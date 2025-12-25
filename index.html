@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Finance Pro">
+    <meta name="theme-color" content="#007AFF">
+    <title>💰 Finance Manager Pro</title>
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23007AFF' width='100' height='100' rx='20'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>💰</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+```
+    :root {
+        --primary: #007AFF;
+        --success: #34C759;
+        --danger: #FF3B30;
+        --warning: #FF9500;
+        --purple: #5856D6;
+        --gray-1: #1D1D1F;
+        --gray-2: #86868B;
+        --gray-3: #E5E5EA;
+        --gray-4: #F2F2F7;
+        --bg: #F5F5F7;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+        background: var(--bg);
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* ===== LOGIN SCREEN ===== */
+    #loginScreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    #loginScreen.hidden {
+        opacity: 0;
+        transform: scale(0.95);
+        pointer-events: none;
+    }
+
+    .login-container {
+        background: white;
+        border-radius: 30px;
+        width: 90%;
+        max-width: 400px;
+        overflow: hidden;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+        animation: loginPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes loginPop {
+        0% { opacity: 0; transform: scale(0.8) translateY(50px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .login-header {
+        background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+        padding: 50px 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.2); opacity: 0.8; }
+    }
+
+    .login-icon {
+        font-size: 70px;
+        margin-bottom: 15px;
+        animation: float 3s ease-in-out infinite;
+        position: relative;
+        z-index: 1;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .login-title {
+        color: white;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        margin-bottom: 5px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .login-subtitle {
+        color: rgba(255,255,255,0.9);
+        font-size: 16px;
+        font-weight: 400;
+        position: relative;
+        z-index: 1;
+    }
+
+    .login-form {
+        padding: 35px 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        color: var(--gray-1);
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        letter-spacing: -0.2px;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 15px 18px;
+        border: 2px solid var(--gray-3);
+        border-radius: 12px;
+        font-size: 16px;
+        background: var(--gray-4);
+        color: var(--gray-1);
+        transition: all 0.3s ease;
+        outline: none;
+    }
+
+    .form-input:focus {
+        border-color: var(--primary);
+        background: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,122,255,0.15);
+    }
+
+    .error-message {
+        color: var(--danger);
+        font-size: 13px;
+        font-weight: 600;
+        margin: 15px 0;
+        text-align: center;
+        min-height: 20px;
+        animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-10px); }
+        75% { transform: translateX(10px); }
+    }
+
+    .login-button {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--purple) 100%);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-size: 17px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(0,122,255,0.3);
+        letter-spacing: 0.3px;
+    }
+
+    .login-button:active {
+        transform: scale(0.98);
+        box-shadow: 0 4px 15px rgba(0,122,255,0.2);
+    }
+
+    /* ===== MAIN APP ===== */
+    #mainApp {
+        display: none;
+        animation: fadeIn 0.5s ease;
+    }
+
+    #mainApp.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .app-header {
+        background: white;
+        padding: 20px 20px 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .app-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--gray-1);
+        letter-spacing: -0.5px;
+    }
+
+    .logout-btn {
+        background: var(--gray-4);
+        border: none;
+        padding: 10px 18px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--danger);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .logout-btn:active {
+        transform: scale(0.95);
+        background: var(--gray-3);
+    }
+
+    .stats-row {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        margin: 0 -20px;
+        padding: 0 20px;
+    }
+
+    .stats-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .stat-card {
+        flex: 0 0 auto;
+        background: linear-gradient(135deg, var(--card-color) 0%, var(--card-color-dark) 100%);
+        border-radius: 16px;
+        padding: 18px 20px;
+        min-width: 140px;
+        box-shadow: 0 8px 20px var(--card-shadow);
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:active {
+        transform: scale(0.98);
+    }
+
+    .stat-card.balance {
+        --card-color: #007AFF;
+        --card-color-dark: #0051D5;
+        --card-shadow: rgba(0,122,255,0.3);
+    }
+
+    .stat-card.income {
+        --card-color: #34C759;
+        --card-color-dark: #248A3D;
+        --card-shadow: rgba(52,199,89,0.3);
+    }
+
+    .stat-card.expense {
+        --card-color: #FF3B30;
+        --card-color-dark: #D70015;
+        --card-shadow: rgba(255,59,48,0.3);
+    }
+
+    .stat-label {
+        color: rgba(255,255,255,0.9);
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+        color: white;
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    /* ===== CHARTS SECTION ===== */
+    .charts-section {
+        padding: 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        animation: slideUp 0.5s ease;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chart-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--gray-1);
+        margin-bottom: 15px;
+    }
+
+    #pieChart {
+        width: 100%;
+        height: 150px;
+    }
+
+    .budget-progress {
+        width: 100%;
+        height: 12px;
+        background: var(--gray-4);
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 15px 0;
+    }
+
+    .budget-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--success) 0%, var(--warning) 50%, var(--danger) 100%);
+        border-radius: 10px;
+        transition: width 0.5s ease;
+        width: 0%;
+    }
+
+    .budget-text {
+        font-size: 13px;
+        color: var(--gray-2);
+        text-align: center;
+    }
+
+    /* ===== ADD TRANSACTION ===== */
+    .add-section {
+        padding: 0 20px 20px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--gray-1);
+        margin-bottom: 15px;
+        letter-spacing: -0.3px;
+    }
+
+    .add-form {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+
+    .input-group {
+        margin-bottom: 18px;
+    }
+
+    .input-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--gray-2);
+        margin-bottom: 8px;
+    }
+
+    .input-field, .input-select, .input-textarea {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid var(--gray-3);
+        border-radius: 12px;
+        font-size: 16px;
+        background: var(--gray-4);
+        color: var(--gray-1);
+        transition: all 0.3s ease;
+        outline: none;
+        font-family: inherit;
+    }
+
+    .input-field:focus, .input-select:focus, .input-textarea:focus {
+        border-color: var(--primary);
+        background: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,122,255,0.1);
+    }
+
+    .input-textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .add-button {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--success) 0%, #248A3D 100%);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-size: 17px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(52,199,89,0.3);
+        margin-top: 10px;
+    }
+
+    .add-button:active {
+        transform: scale(0.98);
+    }
+
+    /* ===== TRANSACTIONS LIST ===== */
+    .transactions-section {
+        padding: 0 20px 30px;
+    }
+
+    .transactions-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .clear-btn {
+        background: transparent;
+        border: none;
+        color: var(--danger);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 8px 16px;
+        border-radius: 10px;
+        transition: background 0.3s ease;
+    }
+
+    .clear-btn:active {
+        background: rgba(255,59,48,0.1);
+    }
+
+    .transaction-item {
+        background: white;
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+        animation: slideUp 0.4s ease;
+    }
+
+    .transaction-item:active {
+        transform: scale(0.98);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .transaction-left {
+        flex: 1;
+    }
+
+    .transaction-category {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--gray-1);
+        margin-bottom: 5px;
+    }
+
+    .transaction-date {
+        font-size: 13px;
+        color: var(--gray-2);
+    }
+
+    .transaction-amount {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+    }
+
+    .transaction-amount.income {
+        color: var(--success);
+    }
+
+    .transaction-amount.expense {
+        color: var(--danger);
+    }
+
+    .transaction-notes {
+        font-size: 13px;
+        color: var(--gray-2);
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid var(--gray-4);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--gray-2);
+    }
+
+    .empty-icon {
+        font-size: 60px;
+        margin-bottom: 15px;
+        opacity: 0.5;
+    }
+
+    .empty-text {
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    /* ===== TOAST NOTIFICATION ===== */
+    .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: var(--gray-1);
+        color: white;
+        padding: 16px 24px;
+        border-radius: 16px;
+        font-size: 15px;
+        font-weight: 600;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        z-index: 10000;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        backdrop-filter: blur(20px);
+    }
+
+    .toast.show {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    /* ===== MODAL ===== */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10001;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .modal.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        width: 90%;
+        max-width: 350px;
+        text-align: center;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+
+    .modal.show .modal-content {
+        transform: scale(1);
+    }
+
+    .modal-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--gray-1);
+        margin-bottom: 10px;
+    }
+
+    .modal-text {
+        font-size: 15px;
+        color: var(--gray-2);
+        margin-bottom: 25px;
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 12px;
+    }
+
+    .modal-btn {
+        flex: 1;
+        padding: 14px;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .modal-btn.cancel {
+        background: var(--gray-4);
+        color: var(--gray-1);
+    }
+
+    .modal-btn.confirm {
+        background: var(--danger);
+        color: white;
+    }
+
+    .modal-btn:active {
+        transform: scale(0.95);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+        .charts-section {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="login-icon">💰</div>
+                <div class="login-title">Finance Manager</div>
+                <div class="login-subtitle">Pro</div>
+            </div>
+            <div class="login-form">
+                <div class="form-group">
+                    <label class="form-label">Nome utente</label>
+                    <input type="text" id="username" class="form-input" placeholder="Inserisci nome utente">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Inserisci password">
+                </div>
+                <div class="error-message" id="loginError"></div>
+                <button class="login-button" onclick="handleLogin()">Accedi</button>
+            </div>
+        </div>
+    </div>
+
+```
+<!-- MAIN APP -->
+<div id="mainApp">
+    <div class="app-header">
+        <div class="header-top">
+            <h1 class="app-title">Finance Pro</h1>
+            <button class="logout-btn" onclick="handleLogout()">Esci</button>
+        </div>
+        <div class="stats-row">
+            <div class="stat-card balance">
+                <div class="stat-label">Saldo</div>
+                <div class="stat-value" id="balanceValue">€ 0.00</div>
+            </div>
+            <div class="stat-card income">
+                <div class="stat-label">Entrate</div>
+                <div class="stat-value" id="incomeValue">€ 0.00</div>
+            </div>
+            <div class="stat-card expense">
+                <div class="stat-label">Uscite</div>
+                <div class="stat-value" id="expenseValue">€ 0.00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="charts-section">
+        <div class="chart-card">
+            <div class="chart-title">📊 Distribuzione</div>
+            <canvas id="pieChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <div class="chart-title">🎯 Budget Mensile</div>
+            <div class="budget-progress">
+                <div class="budget-fill" id="budgetFill"></div>
+            </div>
+            <div class="budget-text" id="budgetText">€ 0 / € 2,000</div>
+        </div>
+    </div>
+
+    <div class="add-section">
+        <h2 class="section-title">➕ Nuova Transazione</h2>
+        <div class="add-form">
+            <div class="input-group">
+                <label class="input-label">Data</label>
+                <input type="date" id="dateInput" class="input-field">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Tipo</label>
+                <select id="typeSelect" class="input-select" onchange="updateCategories()">
+                    <option value="income">💰 Entrata</option>
+                    <option value="expense">💸 Uscita</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Categoria</label>
+                <select id="categorySelect" class="input-select"></select>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Importo (€)</label>
+                <input type="number" id="amountInput" class="input-field" placeholder="0.00" step="0.01" min="0">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Note (opzionale)</label>
+                <textarea id="notesInput" class="input-textarea" placeholder="Aggiungi dettagli..."></textarea>
+            </div>
+            <button class="add-button" onclick="addTransaction()">✅ Aggiungi</button>
+        </div>
+    </div>
+
+    <div class="transactions-section">
+        <div class="transactions-header">
+            <h2 class="section-title">📋 Transazioni</h2>
+            <button class="clear-btn" onclick="showClearModal()">Elimina Tutto</button>
+        </div>
+        <div id="transactionsList"></div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-text" id="modalText"></div>
+        <div class="modal-buttons">
+            <button class="modal-btn cancel" onclick="hideModal()">Annulla</button>
+            <button class="modal-btn confirm" id="modalConfirm">Conferma</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Dati dell'applicazione
+    let transactions = [];
+    const MONTHLY_BUDGET = 2000;
+
+    // Categorie
+    const categories = {
+        income: ['💼 Stipendio', '💰 Freelance', '🎁 Regalo', '📈 Investimenti', '🏦 Altro'],
+        expense: ['🏠 Casa', '🍕 Cibo', '🚗 Trasporti', '🎮 Svago', '👕 Abbigliamento', '💊 Salute', '📚 Educazione', '🛒 Altro']
+    };
+
+    // Inizializzazione
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('dateInput').valueAsDate = new Date();
+        updateCategories();
+        loadTransactions();
+        
+        // Enter per login
+        document.getElementById('password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+    });
+
+    // LOGIN
+    function handleLogin() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorEl = document.getElementById('loginError');
+
+        if (username === 'marchesano.michele' && password === '091073') {
+            document.getElementById('loginScreen').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('mainApp').classList.add('active');
+            }, 500);
+        } else {
+            errorEl.textContent = '❌ Credenziali non valide';
+            document.getElementById('password').value = '';
+        }
+    }
+
+    function handleLogout() {
+        if (confirm('Vuoi davvero uscire?')) {
+            document.getElementById('mainApp').classList.remove('active');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginError').textContent = '';
+        }
+    }
+
+    // CATEGORIE
+    function updateCategories() {
+        const type = document.getElementById('typeSelect').value;
+        const categorySelect = document.getElementById('categorySelect');
+        categorySelect.innerHTML = categories[type].map(cat => 
+            `<option value="${cat}">${cat}</option>`
+        ).join('');
+    }
+
+    // AGGIUNGI TRANSAZIONE
+    function addTransaction() {
+        const date = document.getElementById('dateInput').value;
+        const type = document.getElementById('typeSelect').value;
+        const category = document.getElementById('categorySelect').value;
+        const amount = parseFloat(document.getElementById('amountInput').value);
+        const notes = document.getElementById('notesInput').value;
+
+        if (!date || !amount || amount <= 0) {
+            showToast('⚠️ Compila tutti i campi obbligatori');
+            return;
+        }
+
+        const transaction = {
+            id: Date.now(),
+            date,
+            type,
+            category,
+            amount,
+            notes
+        };
+
+        transactions.unshift(transaction);
+        saveTransactions();
+        renderTransactions();
+        updateStats();
+        
+        // Reset form
+        document.getElementById('amountInput').value = '';
+        document.getElementById('notesInput').value = '';
+        document.getElementById('dateInput').valueAsDate = new Date();
+        
+        showToast('✅ Transazione aggiunta!');
+    }
+
+    // ELIMINA TRANSAZIONE
+    function deleteTransaction(id) {
+        const modal = document.getElementById('modal');
+        document.getElementById('modalTitle').textContent = '🗑️ Elimina Transazione';
+        document.getElementById('modalText').textContent = 'Vuoi eliminare questa transazione?';
+        document.getElementById('modalConfirm').onclick = () => {
+            transactions = transactions.filter(t => t.id !== id);
+            saveTransactions();
+            renderTransactions();
+            updateStats();
+            hideModal();
+            showToast('🗑️ Transazione eliminata');
+        };
+        modal.classList.add('show');
+    }
+
+    function hideModal() {
+        document.getElementById('modal').classList.remove('show');
+    }
+
+    // RENDER TRANSAZIONI
+    function renderTransactions() {
+        const listEl = document.getElementById('transactionsList');
+        
+        if (transactions.length === 0) {
+            listEl.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📊</div>
+                    <div class="empty-text">Nessuna transazione ancora</div>
+                </div>
+            `;
+            return;
+        }
+
+        listEl.innerHTML = transactions.map(t => `
+            <div class="transaction-item" onclick="deleteTransaction(${t.id})">
+                <div class="transaction-left">
+                    <div class="transaction-category">${t.category}</div>
+                    <div class="transaction-date">${formatDate(t.date)}</div>
+                    ${t.notes ? `<div class="transaction-notes">${t.notes}</div>` : ''}
+                </div>
+                <div class="transaction-amount ${t.type}">
+                    ${t.type === 'income' ? '+' : '-'}€ ${t.amount.toFixed(2)}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // AGGIORNA STATISTICHE
+    function updateStats() {
+        const income = transactions
+            .filter(t => t.type === 'income')
+            .reduce((sum, t) => sum + t.amount, 0);
+        
+        const expense = transactions
+            .filter(t => t.type === 'expense')
+            .reduce((sum, t) => sum + t.amount, 0);
+        
+        const balance = income - expense;
+
+        document.getElementById('balanceValue').textContent = `€ ${balance.toFixed(2)}`;
+        document.getElementById('incomeValue').textContent = `€ ${income.toFixed(2)}`;
+        document.getElementById('expenseValue').textContent = `€ ${expense.toFixed(2)}`;
+
+        // Budget
+        const budgetPercentage = Math.min((expense / MONTHLY_BUDGET) * 100, 100);
+        document.getElementById('budgetFill').style.width = budgetPercentage + '%';
+        document.getElementById('budgetText').textContent = 
+            `€ ${expense.toFixed(2)} / € ${MONTHLY_BUDGET.toFixed(2)} (${Math.round(budgetPercentage)}%)`;
+
+        // Grafico a torta
+        drawPieChart(income, expense);
+    }
+
+    // GRAFICO A TORTA
+    function drawPieChart(income, expense) {
+        const canvas = document.getElementById('pieChart');
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        
+        canvas.width = canvas.offsetWidth * dpr;
+        canvas.height = canvas.offsetHeight * dpr;
+        ctx.scale(dpr, dpr);
+        
+        const width = canvas.offsetWidth;
+        const height = canvas.offsetHeight;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const radius = Math.min(width, height) / 2 - 20;
+
+        ctx.clearRect(0, 0, width, height);
+
+        const total = income + expense;
+        
+        if (total === 0) {
+            // Cerchio grigio vuoto
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = '#E5E5EA';
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius * 0.6, 0, 2 * Math.PI);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fill();
+            
+            ctx.fillStyle = '#86868B';
+            ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Nessun dato', centerX, centerY);
+            return;
+        }
+
+        // Entrate (verde)
+        const incomeAngle = (income / total) * 2 * Math.PI;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, -Math.PI / 2, -Math.PI / 2 + incomeAngle);
+        ctx.closePath();
+        ctx.fillStyle = '#34C759';
+        ctx.fill();
+
+        // Uscite (rosso)
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, -Math.PI / 2 + incomeAngle, -Math.PI / 2 + 2 * Math.PI);
+        ctx.closePath();
+        ctx.fillStyle = '#FF3B30';
+        ctx.fill();
+
+        // Cerchio bianco interno (effetto donut)
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius * 0.6, 0, 2 * Math.PI);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+
+        // Testo centrale
+        const percentage = ((income / total) * 100).toFixed(0);
+        ctx.fillStyle = '#1D1D1F';
+        ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(percentage + '%', centerX, centerY - 8);
+        
+        ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.fillStyle = '#86868B';
+        ctx.fillText('Entrate', centerX, centerY + 12);
+    }
+
+    // TOAST
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2500);
+    }
+
+    // STORAGE
+    function saveTransactions() {
+        const data = JSON.stringify(transactions);
+        document.cookie = `financeData=${data}; max-age=${365*24*60*60}; path=/`;
+    }
+
+    function loadTransactions() {
+        const cookies = document.cookie.split('; ');
+        const dataCookie = cookies.find(row => row.startsWith('financeData='));
+        
+        if (dataCookie) {
+            try {
+                const data = dataCookie.split('=')[1];
+                transactions = JSON.parse(data);
+                renderTransactions();
+                updateStats();
+            } catch (e) {
+                transactions = [];
+            }
+        }
+    }
+
+    // UTILITÀ
+    function formatDate(dateStr) {
+        const date = new Date(dateStr + 'T00:00:00');
+        const options = { day: 'numeric', month: 'short', year: 'numeric' };
+        return date.toLocaleDateString('it-IT', options);
+    }
+
+    // Click fuori dal modal per chiudere
+    document.getElementById('modal').addEventListener('click', (e) => {
+        if (e.target.id === 'modal') {
+            hideModal();
+        }
+    });
+
+    // Ridisegna grafico quando cambia dimensione
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            const income = transactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const expense = transactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            drawPieChart(income, expense);
+        }, 100);
+    });
+
+    // Previeni zoom su input focus (iOS)
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+        el.addEventListener('focus', () => {
+            document.querySelector('meta[name="viewport"]').setAttribute('content', 
+                'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        });
+        el.addEventListener('blur', () => {
+            document.querySelector('meta[name="viewport"]').setAttribute('content', 
+                'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+        });
+    });
+</script>
+```
+
+</body>
+</html>classList.add('show');
+        }
+
+```
+    // ELIMINA TUTTO
+    function showClearModal() {
+        if (transactions.length === 0) return;
+        
+        const modal = document.getElementById('modal');
+        document.getElementById('modalTitle').textContent = '⚠️ Attenzione';
+        document.getElementById('modalText').textContent = 'Vuoi eliminare TUTTE le transazioni? Questa azione non può essere annullata.';
+        document.getElementById('modalConfirm').onclick = () => {
+            transactions = [];
+            saveTransactions();
+            renderTransactions();
+            updateStats();
+            hideModal();
+            showToast('🗑️ Tutte le transazioni eliminate');
+        };
+        modal.
+``
